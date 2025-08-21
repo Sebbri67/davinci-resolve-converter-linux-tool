@@ -19,11 +19,17 @@ Il propose les options de conversion suivantes :
 - H264/H265 -> MJPEG
 
 ## Pour les exports de Davinci Resolve
-- ProRes 422 -> H264
-- ProRes 422  -> H264
-- ProRes 422  -> H265
+- ProRes 422/DNxHD/HR -> H264
+- ProRes 422/DNxHD/HR  -> H264
+- ProRes 422/DNxHD/HR  -> H265
 
 ## Les autres options :
 - MJPEG -> H264
 - MJPEG -> H265
 - MJPEG -> H264 (optimisé pour Youtube)
+
+## TODO
+- Amélioration processing multithread
+- Choix de conversion par vidéo
+- Ajout d'autres formats de sortie
+- Ajout d'autres formats d'entrée
