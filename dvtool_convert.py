@@ -592,7 +592,7 @@ def main() -> None:
     help_tab = ttk.Frame(notebook)
     notebook.add(help_tab, text="Aide/Info")
 
-    # --- Cadre 7 : Aide ---
+    # --- Cadre : Aide ---
     frame_help = tk.LabelFrame(help_tab, text=" Aide ", bg=background, relief="flat", bd=0, padx=10, pady=10)
     frame_help.pack(pady=10, fill="x", padx=10)
 
