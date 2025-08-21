@@ -20,7 +20,6 @@ def setup_logging():
         ]
     )
 
-# Appeler cette fonction au début de votre script
 setup_logging()
 
 def check_ffmpeg() -> bool:
@@ -106,7 +105,6 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
     """Construit la commande FFmpeg avec support multi-cœurs et options pour Davinci Resolve."""
     base_cmd = ["ffmpeg", "-i", file_path, "-y"]
 
-    # Ajoutez l'option -threads pour les codecs CPU (libx264, libx265, prores_ks)
     if any(codec in mode for codec in ["libx264", "libx265", "prores_ks"]):
         if num_threads > 0:
             base_cmd.extend(["-threads", str(num_threads)])
@@ -287,7 +285,6 @@ def run_ffmpeg(file_path: str, mode: str, dest_dir: str, progress_bar: ttk.Progr
         
         if errors:
             logging.error("Erreurs FFmpeg :\n" + "\n".join(errors))
-            # messagebox.showerror("Erreur FFmpeg", "\n".join(errors))
     
     threading.Thread(target=update_progress, daemon=True).start()
     return current_process
@@ -299,9 +296,6 @@ def create_debug_tab(notebook):
     debug_text = tk.Text(debug_tab, height=15, width=80)
     debug_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-    # Bouton pour vider la fenêtre de debug
-    # remove_button = tk.Button(frame_buttons, text="Supprimer sélection", width=18,
-    #     command=lambda: remove_selected(input_files, files_list), bg="#d9534f", fg="white")
     clear_button = tk.Button(debug_tab, text="Vider les logs", width=14,
             command=lambda: debug_text.delete(1.0, tk.END), bg="#6c757d", fg="white")
     clear_button.pack(pady=5)
