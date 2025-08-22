@@ -123,7 +123,14 @@ def select_files(input_files: tk.Variable, files_list: tk.Listbox) -> None:
 
 def select_output_dir(output_dir: tk.StringVar) -> None:
     """Ouvre une boîte de dialogue pour sélectionner le répertoire de destination."""
-    dir_path = filedialog.askdirectory(title="Sélectionner un répertoire de destination")
+    last = load_param("dest_dir", default="~")
+    initial=os.path.expanduser(last) if last else os.path.expanduser("~")
+    
+    dir_path = filedialog.askdirectory(
+        title="Sélectionner un répertoire de destination",
+        initialdir=initial
+    )
+    
     if dir_path:
         output_dir.set(dir_path)
         save_param("dest_dir",dir_path)
