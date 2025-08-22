@@ -3,6 +3,7 @@ from tkinter import filedialog, messagebox, ttk
 import tkinter.font as tkFont
 import libs.libtools as libtools
 import config.style as customstyle
+import config.lang as customlang
 
 def create_princ():
     root = tk.Tk()
@@ -23,35 +24,35 @@ def create_princ():
     frame_princ = tk.LabelFrame(root, bg=customstyle.bg_frame, padx=10, pady=10)
     frame_princ.pack(pady=10, fill="x", padx=10)
     
-    close_button = tk.Button(frame_princ, text="Fermer", command=lambda: close_app(root),
+    close_button = tk.Button(frame_princ, text=customlang.get("button_close_name"), command=lambda: close_app(root),
         width=20, bg=customstyle.bg_button_close, fg="white", bd=0, state=tk.NORMAL)
     close_button.pack(side="right", padx=10)
 
-    return root, notebook, input_files, output_dir, bold_font
+    return root, notebook, input_files, output_dir, bold_font, close_button
 
 def create_files_tab(notebook, input_files, output_dir):
     #### ONGLET FICHIERS
 
-    file_tab = customstyle.gen_tab(notebook, "Fichiers")
+    file_tab = customstyle.gen_tab(notebook, customlang.get("tab_files_name"))
 
     input_files = tk.Variable(value=[])
 
     # --- Cadre : Sélection des fichiers ---
-    frame_files = tk.LabelFrame(file_tab, text=" Sélection des fichiers ", bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_files = tk.LabelFrame(file_tab, text=customlang.get("frame_files_name"), bg=customstyle.bg_frame, padx=10, pady=10)
     frame_files.pack(pady=10, fill="x", padx=10)
 
     frame_buttons = tk.Frame(frame_files, bg=customstyle.bg_global)
     frame_buttons.pack(fill="x")
 
-    select_button = tk.Button(frame_buttons, text="Vidéos...", width=18,
+    select_button = tk.Button(frame_buttons, text=customlang.get("button_files_name"), width=18,
         command=lambda: libtools.select_files(input_files, files_list), bg=customstyle.bg_button_files, fg="white")
     select_button.pack(side="left")
 
-    remove_button = tk.Button(frame_buttons, text="Supprimer sélection", width=18,
+    remove_button = tk.Button(frame_buttons, text=customlang.get("button_remove_name"), width=18,
         command=lambda: libtools.remove_selected(input_files, files_list), bg=customstyle.bg_button_remove, fg="white")
     remove_button.pack(side="left", padx=5)
 
-    clear_button = tk.Button(frame_buttons, text="Tout effacer", width=14,
+    clear_button = tk.Button(frame_buttons, text=customlang.get("button_allremove_name"), width=14,
         command=lambda: libtools.clear_all(input_files, files_list), bg=customstyle.bg_button_clear, fg="white")
     clear_button.pack(side="left")
 
@@ -68,18 +69,18 @@ def create_files_tab(notebook, input_files, output_dir):
     files_list.pack(side="left", fill="x", expand=True)
     scrollbar.config(command=files_list.yview)
 
-    tk.Label(frame_files, text="Les fichiers H.264/H.265 sont marqués en rouge.", fg="red", bg=customstyle.bg_frame).pack()
-    tk.Label(frame_files, text="ATTENTION : toutes les vidéos sélectionnées seront traitées avec le mème format de conversion sélectionné dans l'onglet Options.", fg=customstyle.fg_global, bg=customstyle.bg_frame).pack()
-    tk.Label(frame_files, text="Choisir, donc, des vidéos qui ont le même format.", fg=customstyle.fg_global, bg=customstyle.bg_frame).pack()
+    tk.Label(frame_files, text=customlang.get("label_h264_name"), fg="red", bg=customstyle.bg_frame).pack()
+    tk.Label(frame_files, text=customlang.get("label_help_files_name1"), fg=customstyle.fg_global, bg=customstyle.bg_frame).pack()
+    tk.Label(frame_files, text=customlang.get("label_help_files_name2"), fg=customstyle.fg_global, bg=customstyle.bg_frame).pack()
 
     # --- Cadre : Répertoire de sortie ---
-    frame_output = tk.LabelFrame(file_tab, text=" Répertoire de sortie ", bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_output = tk.LabelFrame(file_tab, text=customlang.get("frame_output_name"), bg=customstyle.bg_frame, padx=10, pady=10)
     frame_output.pack(pady=10, fill="x", padx=10)
 
     output_dir = tk.StringVar()
     output_dir.set(libtools.load_param("dest_dir", default=""))
 
-    output_button = tk.Button(frame_output, text="Destination...", width=20,
+    output_button = tk.Button(frame_output, text=customlang.get("button_output_name"), width=20,
                               command=lambda: libtools.select_output_dir(output_dir), bg=customstyle.bg_button_output, fg="white")
     output_button.pack(side="left")
 
@@ -91,10 +92,10 @@ def create_options_tab(notebook, bold_font):
     cuda_available = libtools.check_cuda()
 
     #### ONGLET OPTIONS
-    option_tab = customstyle.gen_tab(notebook, "Options")
+    option_tab = customstyle.gen_tab(notebook, customlang.get("tab_options_name"))
 
     # --- Cadre : Options de conversion ---
-    frame_mode = tk.LabelFrame(option_tab, text=" Options de conversion ", bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_mode = tk.LabelFrame(option_tab, text=customlang.get("frame_options_name"), bg=customstyle.bg_frame, padx=10, pady=10)
     frame_mode.pack(pady=10, fill="x", padx=10)
 
     # Frame pour les options Davinci Resolve (à gauche)
@@ -110,16 +111,16 @@ def create_options_tab(notebook, bold_font):
     frame_other.pack(side="right", padx=10, fill="y")
 
     # Label pour les options d'entrée pour Davinci Resolve
-    tk.Label(frame_davinci_in, text="Pour import Davinci Resolve :", font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
+    tk.Label(frame_davinci_in, text="{} :".format(customlang.get("label_forindv_name")), font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
 
     # Options d'entrée pour Davinci Resolve
     davinci_in_conversions = [
-        ("H.264/H.265 → ProRes 422 HQ", "H.264/H.265 → ProRes 422 HQ (pour Davinci Resolve)"),
-        ("H.264/H.265 → DNxHR HQX", "H.264/H.265 → DNxHR HQX (pour Davinci Resolve)"),
-        ("H.264/H.265 → MJPEG", "H.264/H.265 → MJPEG (pour Davinci Resolve)")
+        ("H.264/H.265 → ProRes 422 HQ", "H.264/H.265 → ProRes 422 HQ (Davinci Resolve)"),
+        ("H.264/H.265 → DNxHR HQX", "H.264/H.265 → DNxHR HQX (Davinci Resolve)"),
+        ("H.264/H.265 → MJPEG", "H.264/H.265 → MJPEG (Davinci Resolve)")
     ]
 
-    conversion_option = tk.StringVar(value="H.264/H.265 → ProRes 422 HQ (pour Davinci Resolve)")
+    conversion_option = tk.StringVar(value="H.264/H.265 → ProRes 422 HQ (Davinci Resolve)")
     for text, mode in davinci_in_conversions:
         fg_spec = customstyle.fg_global
         if text == "H.264/H.265 → ProRes 422 HQ":
@@ -128,13 +129,13 @@ def create_options_tab(notebook, bold_font):
                        bg=customstyle.bg_frame, fg=fg_spec, bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
 
     # Label pour les options de sortie de Davinci Resolve
-    tk.Label(frame_davinci_out, text="Après export Davinci Resolve :", font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
+    tk.Label(frame_davinci_out, text="{} :".format(customlang.get("label_foroutdv_name")), font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
 
     # Options de sortie de Davinci Resolve
     davinci_out_conversions = [
-        ("ProRes/DNxHR → H.264 (Web)", "ProRes/DNxHR → H.264 (pour le Web)"),
-        ("ProRes/DNxHR → H.264 (YouTube)", "ProRes/DNxHR → H.264 (pour YouTube)"),
-        ("ProRes/DNxHR → H.265 (Web/YouTube)", "ProRes/DNxHR → H.265 (pour Web/YouTube)")
+        ("ProRes/DNxHR → H.264 (Web)", "ProRes/DNxHR → H.264 (Web)"),
+        ("ProRes/DNxHR → H.264 (YouTube)", "ProRes/DNxHR → H.264 (YouTube)"),
+        ("ProRes/DNxHR → H.265 (Web/YouTube)", "ProRes/DNxHR → H.265 (Web/YouTube)")
     ]
 
     for text, mode in davinci_out_conversions:
@@ -145,7 +146,7 @@ def create_options_tab(notebook, bold_font):
                        bg=customstyle.bg_frame, fg=fg_spec, bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
 
     # Label pour les autres options
-    tk.Label(frame_other, text="Autres options :", font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
+    tk.Label(frame_other, text="{} :".format(customlang.get("label_otheropt_name")), font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
 
     # Autres options
     other_conversions = [
@@ -171,15 +172,15 @@ def create_options_tab(notebook, bold_font):
         tk.Radiobutton(frame_other, text=text, variable=conversion_option, value=mode,
                        bg=customstyle.bg_frame, fg=fg_spec, bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
 
-    frame_help = tk.LabelFrame(option_tab, text=" Aide", bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_help = tk.LabelFrame(option_tab, text=customlang.get("frame_help_name"), bg=customstyle.bg_frame, padx=10, pady=10)
     frame_help.pack(pady=10, fill="x", padx=10)
-    tk.Label(frame_help, text="Les options recommandées sont en vert", fg=customstyle.fg_recommended, bg=customstyle.bg_frame).pack()
+    tk.Label(frame_help, text=customlang.get("label_opt_recommanded"), fg=customstyle.fg_recommended, bg=customstyle.bg_frame).pack()
 
     # --- Cadre : Nombre de threads ---
-    frame_threads = tk.LabelFrame(option_tab, text=" Nombre de threads ", bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_threads = tk.LabelFrame(option_tab, text=customlang.get("frame_threads_name"), bg=customstyle.bg_frame, padx=10, pady=10)
     frame_threads.pack(pady=10, fill="x", padx=10)
 
-    tk.Label(frame_threads, text="Nombre de threads (0 = auto) :", bg=customstyle.bg_frame).pack(side="left")
+    tk.Label(frame_threads, text="{} (0 = auto) :".format(customlang.get("frame_threads_name")), bg=customstyle.bg_frame).pack(side="left")
     num_threads = tk.StringVar(value="0")
     tk.Entry(frame_threads, textvariable=num_threads, width=5).pack(side="left", padx=5)
 
@@ -191,24 +192,24 @@ def close_app(root: tk.Tk) -> None:
 
 def create_processing_tab(root, notebook, input_files, output_dir, files_list,
                                 select_button, remove_button, clear_button, output_button,
-                                conversion_option, num_threads):
+                                close_button, conversion_option, num_threads):
     #### ONGLET TRAITEMENT
-    process_tab = customstyle.gen_tab(notebook, "Traitement")
+    process_tab = customstyle.gen_tab(notebook, customlang.get("tab_processing_name"))
 
     # --- Cadre : Progression ---
-    frame_progress = tk.LabelFrame(process_tab, text=" Progression ", bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_progress = tk.LabelFrame(process_tab, text=customlang.get("frame_progress_name"), bg=customstyle.bg_frame, padx=10, pady=10)
     frame_progress.pack(pady=10, fill="x", padx=10)
 
     progress_bar = ttk.Progressbar(frame_progress, length=700)
     progress_bar.pack(pady=5)
-    progress_label = tk.Label(frame_progress, text="En attente...", bg=customstyle.bg_frame)
+    progress_label = tk.Label(frame_progress, text=customlang.get("label_inwait"), bg=customstyle.bg_frame)
     progress_label.pack()
 
     # --- Cadre : Boutons de commande ---
-    frame_command = tk.LabelFrame(process_tab, text=" Commandes ", bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_command = tk.LabelFrame(process_tab, text=customlang.get("frame_command_name"), bg=customstyle.bg_frame, padx=10, pady=10)
     frame_command.pack(pady=10, fill="x", padx=10)
 
-    convert_button = tk.Button(frame_command, text="Convertir",
+    convert_button = tk.Button(frame_command, text=customlang.get("button_convert_name"),
         command=lambda: libtools.convert(input_files, conversion_option, output_dir,
             progress_bar, progress_label, files_list, root,
             convert_button, cancel_button, select_button,
@@ -216,17 +217,17 @@ def create_processing_tab(root, notebook, input_files, output_dir, files_list,
         width=20, bg=customstyle.bg_button_convert, fg="white")
     convert_button.pack(side="left")
 
-    cancel_button = tk.Button(frame_command, text="Annuler", command=lambda: libtools.cancel_conversion(),
+    cancel_button = tk.Button(frame_command, text=customlang.get("button_cancel_name"), command=lambda: libtools.cancel_conversion(),
         width=20, bg=customstyle.bg_button_cancel, fg="white", state=tk.DISABLED)
     cancel_button.pack(side="left", padx=5)
 
 def create_debug_tab(notebook):
-    debug_tab = customstyle.gen_tab(notebook, "Débogage")
+    debug_tab = customstyle.gen_tab(notebook, customlang.get("tab_debug_name"))
 
     debug_text = tk.Text(debug_tab, height=15, width=80)
     debug_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-    clear_button = tk.Button(debug_tab, text="Vider les logs", width=14,
+    clear_button = tk.Button(debug_tab, text=customlang.get("button_emptylogs_name"), width=14,
             command=lambda: debug_text.delete(1.0, tk.END), bg=customstyle.bg_button_clear, fg="white")
     clear_button.pack(pady=5)
 

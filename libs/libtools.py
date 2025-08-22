@@ -7,6 +7,7 @@ import os
 import json
 import re
 import threading
+import config.lang as customlang
 
 current_process = None
 
@@ -61,7 +62,7 @@ def check_ffmpeg() -> bool:
         subprocess.run(["ffprobe", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
         return True
     except FileNotFoundError:
-        messagebox.showerror("Erreur", "FFmpeg ou ffprobe n'est pas installé ou n'est pas dans le PATH.")
+        messagebox.showerror(customlang.get("error_label"), customlang.get("error_ffmpeg"))
         return False
 
 def get_video_codec(filename: str) -> Optional[str]:
@@ -89,26 +90,26 @@ def check_cuda() -> bool:
     except (subprocess.TimeoutExpired, subprocess.CalledProcessError, FileNotFoundError):
         return False
   
-def detect_and_convert_h264_h265(input_files: tk.Variable, files_list: tk.Listbox, conversion_option: tk.StringVar) -> None:
-    """Détecte les fichiers H.264/H.265 et propose une conversion automatique."""
-    files = input_files.get()
-    h264_h265_files = []
-    for f in files:
-        codec = get_video_codec(f)
-        if codec in ["h264", "hevc"]:
-            h264_h265_files.append(f)
+# def detect_and_convert_h264_h265(input_files: tk.Variable, files_list: tk.Listbox, conversion_option: tk.StringVar) -> None:
+#     """Détecte les fichiers H.264/H.265 et propose une conversion automatique."""
+#     files = input_files.get()
+#     h264_h265_files = []
+#     for f in files:
+#         codec = get_video_codec(f)
+#         if codec in ["h264", "hevc"]:
+#             h264_h265_files.append(f)
 
-    if h264_h265_files:
-        if messagebox.askyesno("Conversion recommandée",
-                               f"{len(h264_h265_files)} fichier(s) H.264/H.265 détecté(s). Voulez-vous les convertir vers ProRes pour Davinci Resolve ?"):
-            conversion_option.set("H.264/H.265 → ProRes 422 HQ (pour Davinci Resolve)")
+#     if h264_h265_files:
+#         if messagebox.askyesno(customlang.get("quest_recommanded"),
+#                                f"{len(h264_h265_files)} fichier(s) H.264/H.265 détecté(s). Voulez-vous les convertir vers ProRes pour Davinci Resolve ?"):
+#             conversion_option.set("H.264/H.265 → ProRes 422 HQ (pour Davinci Resolve)")
 
 def select_files(input_files: tk.Variable, files_list: tk.Listbox) -> None:
     """Ouvre une boîte de dialogue pour sélectionner des fichiers vidéo."""
     file_paths = filedialog.askopenfilenames(
-        title="Sélectionner des vidéos",
+        title=customlang.get("title_selection_file"),
         initialdir=os.path.expanduser(load_param("last_dir", default="~")),
-        filetypes=[("Fichiers vidéo", "*.mp4 *.mkv *.avi *.mov *.flv *.wmv"), ("Tous les fichiers", "*")]
+        filetypes=[(customlang.get("title_video_files"), "*.mp4 *.mkv *.avi *.mov *.flv *.wmv"), ("Tous les fichiers", "*")]
     )
     if file_paths:
         save_param("last_dir",os.path.dirname(file_paths[0]))
@@ -127,7 +128,7 @@ def select_output_dir(output_dir: tk.StringVar) -> None:
     initial=os.path.expanduser(last) if last else os.path.expanduser("~")
     
     dir_path = filedialog.askdirectory(
-        title="Sélectionner un répertoire de destination",
+        title=customlang.get("title_select_output"),
         initialdir=initial
     )
     
@@ -151,7 +152,7 @@ def clear_all(input_files: tk.Variable, files_list: tk.Listbox) -> None:
     """Efface tous les fichiers de la liste."""
     if not files_list.size():
         return
-    if messagebox.askyesno("Confirmation", "Effacer toute la liste ?"):
+    if messagebox.askyesno("Confirmation", customlang.get("confirmation_remove_label")):
         input_files.set([])
         files_list.delete(0, tk.END)
 
@@ -197,26 +198,26 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
             base_cmd.extend(["-threads", str(num_threads)])
 
     # --- OPTIONS POUR DAVINCI RESOLVE (ENTRÉE) ---
-    if mode == "H.264/H.265 → ProRes 422 HQ (pour Davinci Resolve)":
+    if mode == "H.264/H.265 → ProRes 422 HQ (Davinci Resolve)":
         return base_cmd + [
             "-c:v", "prores_ks", "-profile:v", "3", "-qscale:v", "11",
             "-vendor", "ap10", "-pix_fmt", "yuv422p10le",
             "-acodec", "pcm_s16le", out_file
         ]
-    elif mode == "H.264/H.265 → DNxHR HQX (pour Davinci Resolve)":
+    elif mode == "H.264/H.265 → DNxHR HQX (Davinci Resolve)":
         return base_cmd + [
             "-c:v", "dnxhd", "-vf", "scale=3840:2160,fps=60,format=yuv422p10le",
             "-b:v", "440M", "-profile:v", "dnxhr_hqx",
             "-pix_fmt", "yuv422p10le", "-acodec", "pcm_s16le", out_file
         ]
-    elif mode == "H.264/H.265 → MJPEG (pour Davinci Resolve)":
+    elif mode == "H.264/H.265 → MJPEG (Davinci Resolve)":
         return base_cmd + [
             "-c:v", "mjpeg", "-q:v", "2", "-pix_fmt", "yuvj422p",
             "-acodec", "pcm_s16le", out_file
         ]
 
     # --- OPTIONS POUR SORTIE DE DAVINCI RESOLVE (ProRes/DNxHD → H.264/H.265) ---
-    elif mode == "ProRes/DNxHR → H.264 (pour le Web)":
+    elif mode == "ProRes/DNxHR → H.264 (Web)":
         if cuda_available:
             return base_cmd + [
                 "-hwaccel", "cuda", "-hwaccel_device", "0",
@@ -232,7 +233,7 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
                 "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
                 "-movflags", "+faststart", out_file
             ]
-    elif mode == "ProRes/DNxHR → H.264 (pour YouTube)":
+    elif mode == "ProRes/DNxHR → H.264 (YouTube)":
         if cuda_available:
             return base_cmd + [
                 "-hwaccel", "cuda", "-hwaccel_device", "0",
@@ -248,7 +249,7 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
                 "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
                 "-movflags", "+faststart", out_file
             ]
-    elif mode == "ProRes/DNxHR → H.265 (pour Web/YouTube)":
+    elif mode == "ProRes/DNxHR → H.265 (Web/YouTube)":
         return base_cmd + [
             "-c:v", "libx265", "-preset", "slow", "-crf", "22",
             "-pix_fmt", "yuv420p", "-tag:v", "hvc1",
@@ -316,12 +317,12 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
             "-movflags", "+faststart", out_file
         ]
     else:
-        raise ValueError(f"Mode inconnu ou non disponible sans CUDA : {mode}")
+        raise ValueError(f"{customlang.get("cuda_unknown")} : {mode}")
     
 def cancel_conversion():
     """Annule la conversion en cours."""
     global current_process
-    logging.debug(f"Commande FFmpeg : " + str(current_process.pid) + " annulée")  # Log de la commande FFmpeg
+    logging.debug(f"Command FFmpeg : " + str(current_process.pid) + " canceled")  # Log de la commande FFmpeg
     if current_process:
         current_process.terminate()
         current_process = None
@@ -339,14 +340,14 @@ def convert(input_files: tk.Variable, conversion_option: tk.StringVar, output_di
     dest_dir = output_dir.get()
 
     if not files:
-        messagebox.showerror("Erreur", "Veuillez sélectionner au moins un fichier vidéo.")
+        messagebox.showerror(customlang.get("error_label"), customlang.get("error_nofiles"))
         return
     if not dest_dir:
-        messagebox.showerror("Erreur", "Veuillez sélectionner un répertoire de destination.")
+        messagebox.showerror(customlang.get("error_label"), customlang.get("error_nodest"))
         return
     
     progress_bar["value"] = 0
-    progress_label.config(text="Conversion en cours...")
+    progress_label.config(text=customlang.get("conversion_inprogress"))
 
     def start_batch():
         set_ui_state("processing", convert_button, cancel_button, select_button, remove_button, clear_button, output_button, close_button)
@@ -357,9 +358,9 @@ def convert(input_files: tk.Variable, conversion_option: tk.StringVar, output_di
             process.wait()  # Attendre la fin de la conversion
             if current_process is None:  # Si annulé
                 break
-        messagebox.showinfo("Batch terminé", "Toutes les conversions sont terminées !")
+        messagebox.showinfo(customlang.get("end_batch"), customlang.get("end_batch_notice"))
         progress_bar["value"] = 0
-        progress_label.config(text="En attente...")
+        progress_label.config(text=customlang.get("label_inwait"))
         set_ui_state("idle", convert_button, cancel_button, select_button, remove_button, clear_button, output_button, close_button)
 
     threading.Thread(target=start_batch, daemon=True).start()
@@ -374,17 +375,17 @@ def run_ffmpeg(file_path: str, mode: str, dest_dir: str, progress_bar: ttk.Progr
     base_name = os.path.splitext(os.path.basename(file_path))[0]
 
     # Détermine l'extension de sortie en fonction du mode
-    if "ProRes" in mode and "pour Davinci Resolve" in mode:
-        out_file = os.path.join(dest_dir, f"{base_name}_ProRes.mov")
-    elif "DNxHR" in mode and "pour Davinci Resolve" in mode:
-        out_file = os.path.join(dest_dir, f"{base_name}_DNxHR.mov")
-    elif "MJPEG (pour Davinci Resolve)" in mode:
-        out_file = os.path.join(dest_dir, f"{base_name}_MJPEG_DaVinci.mov")
+    if "ProRes" in mode and "Davinci Resolve" in mode:
+        out_file = os.path.join(dest_dir, f"{base_name}_ProRes_DV.mov")
+    elif "DNxHR" in mode and "Davinci Resolve" in mode:
+        out_file = os.path.join(dest_dir, f"{base_name}_DNxHR_DV.mov")
+    elif "MJPEG (Davinci Resolve)" in mode:
+        out_file = os.path.join(dest_dir, f"{base_name}_MJPEG_DV.mov")
     elif mode == "H.264 → MJPEG":
         out_file = os.path.join(dest_dir, f"{base_name}_mjpeg.mov")
     elif "H.265" in mode:
         out_file = os.path.join(dest_dir, f"{base_name}_h265.mp4")
-    elif "pour le Web" in mode or "pour YouTube" in mode:
+    elif "Web" in mode:
         out_file = os.path.join(dest_dir, f"{base_name}_Web.mp4")
     elif "YouTube" in mode:
         out_file = os.path.join(dest_dir, f"{base_name}_YT.mp4")
@@ -393,12 +394,12 @@ def run_ffmpeg(file_path: str, mode: str, dest_dir: str, progress_bar: ttk.Progr
 
     total_duration = get_duration(file_path)
     if not total_duration:
-        messagebox.showerror("Erreur", f"Impossible de lire la durée de la vidéo : {file_path}")
+        messagebox.showerror(customlang.get("error_label"), f"{customlang.get("error_read_time")} : {file_path}")
         return None
 
     cmd = build_ffmpeg_command(file_path, mode, out_file, num_threads)
 
-    logging.debug(f"Commande FFmpeg : {' '.join(cmd)}")  # Log de la commande FFmpeg
+    logging.debug(f"Command FFmpeg : {' '.join(cmd)}")  # Log de la commande FFmpeg
 
     current_process = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL, text=True, universal_newlines=True)
 
@@ -420,7 +421,7 @@ def run_ffmpeg(file_path: str, mode: str, dest_dir: str, progress_bar: ttk.Progr
                 root.update_idletasks()
         
         if errors:
-            logging.error("Erreurs FFmpeg :\n" + "\n".join(errors))
+            logging.error("Errors FFmpeg :\n" + "\n".join(errors))
     
     threading.Thread(target=update_progress, daemon=True).start()
 
