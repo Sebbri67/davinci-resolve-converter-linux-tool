@@ -256,5 +256,5 @@ def create_help_tab(notebook, bold_font):
 
     tk.Label(frame_help, text="⚠️ Pour Davinci Resolve (version gratuite sous Linux) :", font=bold_font, bg=customstyle.bg_frame).pack(anchor="w")
     tk.Label(frame_help, text="• Utilisez ProRes ou DNxHD pour une compatibilité optimale.", bg=customstyle.bg_frame).pack(anchor="w")
-    tk.Label(frame_help, text="• Les fichiers H.264 et H.265 doivent être convertis avant import.", bg=customstyle.bg_frame).pack(anchor="w")
+    tk.Label(frame_help, text="• Les fichiers H.264 et H.265 doivent être convertis avant import dasn Davinci Resolve.", bg=customstyle.bg_frame).pack(anchor="w")
     tk.Label(frame_help, text=f"• CUDA {'est disponible' if libtools.check_cuda() else 'n\'est pas disponible'} sur ce système.", bg=customstyle.bg_frame).pack(anchor="w")
