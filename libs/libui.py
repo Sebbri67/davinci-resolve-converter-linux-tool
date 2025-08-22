@@ -6,7 +6,7 @@ import config.style as customstyle
 
 def create_princ():
     root = tk.Tk()
-    root.title("Convertisseur vidéo pour Davinci Resolve")
+    root.title("Convertisseur vidéo pour Davinci Resolve - v1.1")
     root.geometry("900x600")
     root.configure(bg=customstyle.bg_global)
 
@@ -24,7 +24,7 @@ def create_princ():
     frame_princ.pack(pady=10, fill="x", padx=10)
     
     close_button = tk.Button(frame_princ, text="Fermer", command=lambda: close_app(root),
-        width=20, bg=customstyle.bg_button_close, fg="white", state=tk.NORMAL)
+        width=20, bg=customstyle.bg_button_close, fg="white", bd=0, state=tk.NORMAL)
     close_button.pack(side="right", padx=10)
 
     return root, notebook, input_files, output_dir, bold_font
@@ -256,5 +256,7 @@ def create_help_tab(notebook, bold_font):
 
     tk.Label(frame_help, text="⚠️ Pour Davinci Resolve (version gratuite sous Linux) :", font=bold_font, bg=customstyle.bg_frame).pack(anchor="w")
     tk.Label(frame_help, text="• Utilisez ProRes ou DNxHD pour une compatibilité optimale.", bg=customstyle.bg_frame).pack(anchor="w")
-    tk.Label(frame_help, text="• Les fichiers H.264 et H.265 doivent être convertis avant import dasn Davinci Resolve.", bg=customstyle.bg_frame).pack(anchor="w")
+    tk.Label(frame_help, text="• Les fichiers H.264 et H.265 doivent être convertis avant import dans Davinci Resolve.", bg=customstyle.bg_frame).pack(anchor="w")
     tk.Label(frame_help, text=f"• CUDA {'est disponible' if libtools.check_cuda() else 'n\'est pas disponible'} sur ce système.", bg=customstyle.bg_frame).pack(anchor="w")
+    tk.Label(frame_help, text=f" ", bg=customstyle.bg_frame).pack(anchor="w")
+    tk.Label(frame_help, text=f"Copyright (C) 2025 - Sébastien Brière", bg=customstyle.bg_frame).pack(anchor="w")
