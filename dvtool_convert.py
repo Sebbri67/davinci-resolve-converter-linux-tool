@@ -413,7 +413,7 @@ def main() -> None:
     background = "#f0f0f0"
     root = tk.Tk()
     root.title("Convertisseur vidéo pour Davinci Resolve")
-    root.geometry("900x500")
+    root.geometry("900x600")
     root.configure(bg=background)
     bold_font = tkFont.Font(family="Helvetica", size=10, weight="bold")
     input_files = tk.Variable(value=[])
