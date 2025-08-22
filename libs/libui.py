@@ -7,7 +7,7 @@ import config.lang as customlang
 
 def create_princ():
     root = tk.Tk()
-    root.title("Convertisseur vidéo pour Davinci Resolve - v1.1")
+    root.title(customlang.get("root_title"))
     root.geometry("900x600")
     root.configure(bg=customstyle.bg_global)
 

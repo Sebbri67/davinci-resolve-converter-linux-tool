@@ -1,5 +1,7 @@
 import locale
 
+root_title = "root_title"
+
 tab_files_name = "tab_files_name"
 tab_files_name = "tab_files_name"
 tab_options_name = "tab_options_name"
@@ -59,6 +61,9 @@ lang, enc = locale.getdefaultlocale()
 dict={}
 dict['fr_FR'] = {}
 dict['en_US'] = {}
+
+dict['fr_FR'][root_title] = "Convertisseur vidéo pour Davinci Resolve - v1.1"
+dict['en_US'][root_title] = "Video Converter for Davinci Resolve - v1.1"
 
 dict['fr_FR'][error_label] = "Erreur"
 dict['en_US'][error_label] = "Error"
