@@ -32,7 +32,7 @@ def create_princ():
 def create_files_tab(notebook, input_files, output_dir):
     #### ONGLET FICHIERS
 
-    file_tab = customstyle.gen_tab(notebook, "Fichiers", customstyle.bg_tab1)
+    file_tab = customstyle.gen_tab(notebook, "Fichiers")
 
     input_files = tk.Variable(value=[])
 
@@ -89,7 +89,7 @@ def create_options_tab(notebook, bold_font):
     cuda_available = libtools.check_cuda()
 
     #### ONGLET OPTIONS
-    option_tab = customstyle.gen_tab(notebook, "Options", customstyle.bg_tab2)
+    option_tab = customstyle.gen_tab(notebook, "Options")
 
     # --- Cadre : Options de conversion ---
     frame_mode = tk.LabelFrame(option_tab, text=" Options de conversion ", bg=customstyle.bg_frame, padx=10, pady=10)
@@ -180,7 +180,7 @@ def create_processing_tab(root, notebook, input_files, output_dir, files_list,
                                 select_button, remove_button, clear_button, output_button,
                                 conversion_option, num_threads):
     #### ONGLET TRAITEMENT
-    process_tab = customstyle.gen_tab(notebook, "Traitement", customstyle.bg_tab3)
+    process_tab = customstyle.gen_tab(notebook, "Traitement")
 
     # --- Cadre : Progression ---
     frame_progress = tk.LabelFrame(process_tab, text=" Progression ", bg=customstyle.bg_frame, padx=10, pady=10)
@@ -208,7 +208,7 @@ def create_processing_tab(root, notebook, input_files, output_dir, files_list,
     cancel_button.pack(side="left", padx=5)
 
 def create_debug_tab(notebook):
-    debug_tab = customstyle.gen_tab(notebook, "Débogage", customstyle.bg_tab4)
+    debug_tab = customstyle.gen_tab(notebook, "Débogage")
 
     debug_text = tk.Text(debug_tab, height=15, width=80)
     debug_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
@@ -235,7 +235,7 @@ def create_debug_tab(notebook):
 
 def create_help_tab(notebook, bold_font):
     #### ONGLET AIDE
-    help_tab = customstyle.gen_tab(notebook, "Aide/Info", customstyle.bg_tab5)
+    help_tab = customstyle.gen_tab(notebook, "Aide")
 
     # --- Cadre : Aide ---
     frame_help = tk.LabelFrame(help_tab, text=" Aide ", bg=customstyle.bg_frame, relief="flat", bd=0, padx=10, pady=10)

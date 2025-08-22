@@ -2,13 +2,17 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import tkinter.font as tkFont
 
+from click import style
+from distro import name
+
 bg_global = "#f0f0f0"
 bg_frame = "#f0f0f0"
-bg_tab1="#f0f0f0"
-bg_tab2="#f0f0f0"
-bg_tab3="#f0f0f0"
-bg_tab4="#f0f0f0"
+bg_tab1="#f8debd"
+bg_tab2="#b3f0bd"
+bg_tab3="#c9e1ff"
+bg_tab4="#ffcef8"
 bg_tab5="#f0f0f0"
+bg_tab=bg_tab5
 
 bg_button_files = "orange"
 bg_button_remove = "#d9534f"
@@ -19,19 +23,18 @@ bg_button_convert = "green"
 bg_button_cancel = "red"
 bg_button_close = "#6c757d"
 
-def gen_tab(notebook, name, bg_color):
+def gen_tab(notebook, name):
+  
+        style = ttk.Style()
+        style.theme_use("default")
 
-    style = ttk.Style()
-    style.theme_use("clam")
+        style.configure("TNotebook", background=bg_frame)      # arrière-plan global
+        style.configure("TNotebook.Tab", background=bg_tab)  # onglets
+        style.map("TNotebook.Tab",
+                background=[("selected", "white")],            # couleur si sélectionné
+                foreground=[("selected", "black")])
 
-    # Personnaliser les onglets du Notebook
-    style.configure("TNotebook", background=bg_frame)      # arrière-plan global
-    style.configure("TNotebook.Tab", background=bg_color)  # onglets
-    style.map("TNotebook.Tab",
-            background=[("selected", "white")],           # couleur si sélectionné
-            foreground=[("selected", "black")])
-    
-    tab = ttk.Frame(notebook, style="TNotebook")
-    notebook.add(tab, text=name)
+        tab = ttk.Frame(notebook, style="TNotebook")
+        notebook.add(tab, text=name)
 
-    return tab  
+        return tab  
