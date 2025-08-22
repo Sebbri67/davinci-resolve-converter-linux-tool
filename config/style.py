@@ -14,6 +14,9 @@ bg_tab4="#ffcef8"
 bg_tab5="#f0f0f0"
 bg_tab=bg_tab5
 
+fg_global = "black"
+fg_recommended = "green"
+
 bg_button_files = "#ec9129"
 bg_button_remove = "#d9534f"
 bg_button_clear = "#6c757d"

@@ -69,6 +69,8 @@ def create_files_tab(notebook, input_files, output_dir):
     scrollbar.config(command=files_list.yview)
 
     tk.Label(frame_files, text="Les fichiers H.264/H.265 sont marqués en rouge.", fg="red", bg=customstyle.bg_frame).pack()
+    tk.Label(frame_files, text="ATTENTION : toutes les vidéos sélectionnées seront traitées avec le mème format de conversion sélectionné dans l'onglet Options.", fg=customstyle.fg_global, bg=customstyle.bg_frame).pack()
+    tk.Label(frame_files, text="Choisir, donc, des vidéos qui ont le même format.", fg=customstyle.fg_global, bg=customstyle.bg_frame).pack()
 
     # --- Cadre : Répertoire de sortie ---
     frame_output = tk.LabelFrame(file_tab, text=" Répertoire de sortie ", bg=customstyle.bg_frame, padx=10, pady=10)
@@ -119,8 +121,11 @@ def create_options_tab(notebook, bold_font):
 
     conversion_option = tk.StringVar(value="H.264/H.265 → ProRes 422 HQ (pour Davinci Resolve)")
     for text, mode in davinci_in_conversions:
+        fg_spec = customstyle.fg_global
+        if text == "H.264/H.265 → ProRes 422 HQ":
+            fg_spec = customstyle.fg_recommended
         tk.Radiobutton(frame_davinci_in, text=text, variable=conversion_option, value=mode,
-                       bg=customstyle.bg_frame, fg="blue", bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
+                       bg=customstyle.bg_frame, fg=fg_spec, bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
 
     # Label pour les options de sortie de Davinci Resolve
     tk.Label(frame_davinci_out, text="Après export Davinci Resolve :", font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
@@ -133,8 +138,11 @@ def create_options_tab(notebook, bold_font):
     ]
 
     for text, mode in davinci_out_conversions:
+        fg_spec = customstyle.fg_global
+        if text == "ProRes/DNxHR → H.264 (YouTube)":
+            fg_spec = customstyle.fg_recommended
         tk.Radiobutton(frame_davinci_out, text=text, variable=conversion_option, value=mode,
-                       bg=customstyle.bg_frame, fg="blue", bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
+                       bg=customstyle.bg_frame, fg=fg_spec, bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
 
     # Label pour les autres options
     tk.Label(frame_other, text="Autres options :", font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
@@ -159,8 +167,13 @@ def create_options_tab(notebook, bold_font):
     ])
 
     for text, mode in other_conversions:
+        fg_spec = customstyle.fg_global
         tk.Radiobutton(frame_other, text=text, variable=conversion_option, value=mode,
-                       bg=customstyle.bg_frame, fg="blue", bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
+                       bg=customstyle.bg_frame, fg=fg_spec, bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
+
+    frame_help = tk.LabelFrame(option_tab, text=" Aide", bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_help.pack(pady=10, fill="x", padx=10)
+    tk.Label(frame_help, text="Les options recommandées sont en vert", fg=customstyle.fg_recommended, bg=customstyle.bg_frame).pack()
 
     # --- Cadre : Nombre de threads ---
     frame_threads = tk.LabelFrame(option_tab, text=" Nombre de threads ", bg=customstyle.bg_frame, padx=10, pady=10)
