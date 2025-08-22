@@ -33,9 +33,9 @@ Il propose les options de conversion suivantes :
 
 ## Prérecquis
 TODO
-FFMPEG doit être installé
-PYTHON3 doit être installé
-PYTHON TK doit être installé
+- FFMPEG doit être installé
+- Python 3 doit être installé
+- Python 3 TK doit être installé
 
 ## TODO
 - Lister les prérecquis (ffmpeg, python3 et ses modules)
