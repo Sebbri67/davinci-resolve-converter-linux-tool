@@ -140,7 +140,7 @@ def create_options_tab(notebook, bold_font):
 
     for text, mode in davinci_out_conversions:
         fg_spec = customstyle.fg_global
-        if text == "ProRes/DNxHR → H.264 (YouTube)":
+        if text == "ProRes/DNxHR → H.264 (YouTube)" or text == "ProRes/DNxHR → H.265 (Web/YouTube)":
             fg_spec = customstyle.fg_recommended
         tk.Radiobutton(frame_davinci_out, text=text, variable=conversion_option, value=mode,
                        bg=customstyle.bg_frame, fg=fg_spec, bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
