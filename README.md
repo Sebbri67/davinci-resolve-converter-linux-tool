@@ -28,6 +28,15 @@ Il propose les options de conversion suivantes :
 - MJPEG -> H265
 - MJPEG -> H264 (optimisé pour Youtube)
 
+## Autres notes
+- Détection auto de la langue (fr_FR ou en_US). Si langue non supportée, l'interface basculera en en_US
+
+## Prérecquis
+TODO
+FFMPEG doit être installé
+PYTHON3 doit être installé
+PYTHON TK doit être installé
+
 ## TODO
 - Lister les prérecquis (ffmpeg, python3 et ses modules)
 - Ajout d'autres options de conversion
