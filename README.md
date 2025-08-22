@@ -29,9 +29,7 @@ Il propose les options de conversion suivantes :
 - MJPEG -> H264 (optimisé pour Youtube)
 
 ## TODO
-- lister les prérecquis (ffmjpeg, python3 et ses modules)
-- Ajout d'autres options de conversion (H264/H265 -> MJPEG)
+- Lister les prérecquis (ffmjpeg, python3 et ses modules)
+- Ajout d'autres options de conversion
 - Amélioration processing multithread
-- Choix de conversion par vidéo
-- Ajout d'autres formats de sortie
-- Ajout d'autres formats d'entrée
+- Choix de conversion par vidéo (?)
