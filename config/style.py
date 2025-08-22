@@ -14,13 +14,13 @@ bg_tab4="#ffcef8"
 bg_tab5="#f0f0f0"
 bg_tab=bg_tab5
 
-bg_button_files = "orange"
+bg_button_files = "#ec9129"
 bg_button_remove = "#d9534f"
 bg_button_clear = "#6c757d"
 bg_button_detect = "#5bc0de"
 bg_button_output = "#5bc0de"
-bg_button_convert = "green"
-bg_button_cancel = "red"
+bg_button_convert = "#1aa02c"
+bg_button_cancel = "#b43546"
 bg_button_close = "#6c757d"
 
 def gen_tab(notebook, name):
@@ -28,10 +28,10 @@ def gen_tab(notebook, name):
         style = ttk.Style()
         style.theme_use("default")
 
-        style.configure("TNotebook", background=bg_frame)      # arrière-plan global
-        style.configure("TNotebook.Tab", background=bg_tab)  # onglets
+        style.configure("TNotebook", background=bg_frame)
+        style.configure("TNotebook.Tab", background=bg_tab)
         style.map("TNotebook.Tab",
-                background=[("selected", "white")],            # couleur si sélectionné
+                background=[("selected", "white")],
                 foreground=[("selected", "black")])
 
         tab = ttk.Frame(notebook, style="TNotebook")
