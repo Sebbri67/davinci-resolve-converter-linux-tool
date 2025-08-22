@@ -104,23 +104,48 @@ def check_cuda() -> bool:
 #                                f"{len(h264_h265_files)} fichier(s) H.264/H.265 détecté(s). Voulez-vous les convertir vers ProRes pour Davinci Resolve ?"):
 #             conversion_option.set("H.264/H.265 → ProRes 422 HQ (pour Davinci Resolve)")
 
+# def select_files(input_files: tk.Variable, files_list: tk.Listbox) -> None:
+#     """Ouvre une boîte de dialogue pour sélectionner des fichiers vidéo."""
+#     file_paths = filedialog.askopenfilenames(
+#         title=customlang.get("title_selection_file"),
+#         initialdir=os.path.expanduser(load_param("last_dir", default="~")),
+#         filetypes=[(customlang.get("title_video_files"), "*.mp4 *.mkv *.avi *.mov *.flv *.wmv"), ("Tous les fichiers", "*")]
+#     )
+#     if file_paths:
+#         save_param("last_dir",os.path.dirname(file_paths[0]))
+#         input_files.set(list(file_paths))
+#         files_list.delete(0, tk.END)
+#         for f in file_paths:
+#             files_list.insert(tk.END, f)
+#             codec = get_video_codec(f)
+#             if codec in ["h264", "hevc"]:
+#                 index = files_list.size() - 1
+#                 files_list.itemconfig(index, {'fg': 'red'})
+
 def select_files(input_files: tk.Variable, files_list: tk.Listbox) -> None:
-    """Ouvre une boîte de dialogue pour sélectionner des fichiers vidéo."""
+    """Ouvre une boîte de dialogue pour sélectionner des fichiers vidéo et les ajoute à la liste existante."""
     file_paths = filedialog.askopenfilenames(
         title=customlang.get("title_selection_file"),
         initialdir=os.path.expanduser(load_param("last_dir", default="~")),
         filetypes=[(customlang.get("title_video_files"), "*.mp4 *.mkv *.avi *.mov *.flv *.wmv"), ("Tous les fichiers", "*")]
     )
     if file_paths:
-        save_param("last_dir",os.path.dirname(file_paths[0]))
-        input_files.set(list(file_paths))
-        files_list.delete(0, tk.END)
+        save_param("last_dir", os.path.dirname(file_paths[0]))
+        
+        # Récupère les fichiers déjà présents
+        current_files = list(input_files.get())
+        
+        # Ajoute seulement les nouveaux fichiers (évite doublons)
         for f in file_paths:
-            files_list.insert(tk.END, f)
-            codec = get_video_codec(f)
-            if codec in ["h264", "hevc"]:
-                index = files_list.size() - 1
-                files_list.itemconfig(index, {'fg': 'red'})
+            if f not in current_files:
+                current_files.append(f)
+                files_list.insert(tk.END, f)
+                codec = get_video_codec(f)
+                if codec in ["h264", "hevc"]:
+                    index = files_list.size() - 1
+                    files_list.itemconfig(index, {'fg': 'red'})
+        
+        input_files.set(current_files)
 
 def select_output_dir(output_dir: tk.StringVar) -> None:
     """Ouvre une boîte de dialogue pour sélectionner le répertoire de destination."""
