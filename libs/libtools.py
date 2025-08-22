@@ -107,9 +107,11 @@ def select_files(input_files: tk.Variable, files_list: tk.Listbox) -> None:
     """Ouvre une boîte de dialogue pour sélectionner des fichiers vidéo."""
     file_paths = filedialog.askopenfilenames(
         title="Sélectionner des vidéos",
+        initialdir=os.path.expanduser(load_param("last_dir", default="~")),
         filetypes=[("Fichiers vidéo", "*.mp4 *.mkv *.avi *.mov *.flv *.wmv"), ("Tous les fichiers", "*")]
     )
     if file_paths:
+        save_param("last_dir",os.path.dirname(file_paths[0]))
         input_files.set(list(file_paths))
         files_list.delete(0, tk.END)
         for f in file_paths:
