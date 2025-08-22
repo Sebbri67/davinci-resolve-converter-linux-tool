@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# VERSION 1.0
+# VERSION 1.1
 
 import libs.libui as libui
 import libs.libtools as libtools
