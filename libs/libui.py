@@ -116,7 +116,7 @@ def create_options_tab(notebook, bold_font):
     # Options d'entrée pour Davinci Resolve
     davinci_in_conversions = [
         ("H.264/H.265 → ProRes 422 HQ", "H.264/H.265 → ProRes 422 HQ (Davinci Resolve)"),
-        ("H.264/H.265 → DNxHR HQX", "H.264/H.265 → DNxHR HQX (Davinci Resolve)"),
+        ("H.264/H.265 → DNxHR HQX (UHD only)", "H.264/H.265 → DNxHR HQX (Davinci Resolve)"),
         ("H.264/H.265 → MJPEG", "H.264/H.265 → MJPEG (Davinci Resolve)")
     ]
 
