@@ -38,7 +38,7 @@ def create_files_tab(notebook, input_files, output_dir):
     input_files = tk.Variable(value=[])
 
     # --- Cadre : Sélection des fichiers ---
-    frame_files = tk.LabelFrame(file_tab, text=customlang.get("frame_files_name"), bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_files = tk.LabelFrame(file_tab, text=customlang.get("frame_files_name"), bg=customstyle.bg_frame, fg=customstyle.fg_frame, padx=10, pady=10)
     frame_files.pack(pady=10, fill="x", padx=10)
 
     frame_buttons = tk.Frame(frame_files, bg=customstyle.bg_global)
@@ -65,7 +65,7 @@ def create_files_tab(notebook, input_files, output_dir):
     frame_list.pack(fill="x", pady=5)
     scrollbar = tk.Scrollbar(frame_list, orient="vertical")
     scrollbar.pack(side="right", fill="y")
-    files_list = tk.Listbox(frame_list, width=80, height=8, relief="flat", yscrollcommand=scrollbar.set)
+    files_list = tk.Listbox(frame_list, bg=customstyle.bg_field, fg=customstyle.fg_field, highlightthickness=1, highlightcolor=customstyle.bd_color, highlightbackground=customstyle.bd_color, width=80, height=8, relief="flat", yscrollcommand=scrollbar.set)
     files_list.pack(side="left", fill="x", expand=True)
     scrollbar.config(command=files_list.yview)
 
@@ -74,7 +74,7 @@ def create_files_tab(notebook, input_files, output_dir):
     tk.Label(frame_files, text=customlang.get("label_help_files_name2"), fg=customstyle.fg_global, bg=customstyle.bg_frame).pack()
 
     # --- Cadre : Répertoire de sortie ---
-    frame_output = tk.LabelFrame(file_tab, text=customlang.get("frame_output_name"), bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_output = tk.LabelFrame(file_tab, text=customlang.get("frame_output_name"), bg=customstyle.bg_frame, fg=customstyle.fg_frame, padx=10, pady=10)
     frame_output.pack(pady=10, fill="x", padx=10)
 
     output_dir = tk.StringVar()
@@ -84,7 +84,7 @@ def create_files_tab(notebook, input_files, output_dir):
                               command=lambda: libtools.select_output_dir(output_dir), bg=customstyle.bg_button_output, fg="white")
     output_button.pack(side="left")
 
-    tk.Entry(frame_output, textvariable=output_dir, width=40, relief="flat").pack(side="left", padx=5)
+    tk.Entry(frame_output, bg=customstyle.bg_field, fg=customstyle.fg_field, highlightthickness=1, highlightcolor=customstyle.bd_color, highlightbackground=customstyle.bd_color, textvariable=output_dir, width=40, relief="flat").pack(side="left", padx=5)
 
     return files_list, input_files, select_button, remove_button, clear_button, output_button, output_dir
 
@@ -95,7 +95,7 @@ def create_options_tab(notebook, bold_font):
     option_tab = customstyle.gen_tab(notebook, customlang.get("tab_options_name"))
 
     # --- Cadre : Options de conversion ---
-    frame_mode = tk.LabelFrame(option_tab, text=customlang.get("frame_options_name"), bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_mode = tk.LabelFrame(option_tab, text=customlang.get("frame_options_name"), bg=customstyle.bg_frame, fg=customstyle.fg_frame, padx=10, pady=10)
     frame_mode.pack(pady=10, fill="x", padx=10)
 
     # Frame pour les options Davinci Resolve (à gauche)
@@ -111,7 +111,7 @@ def create_options_tab(notebook, bold_font):
     frame_other.pack(side="left", padx=10, fill="y")
 
     # Label pour les options d'entrée pour Davinci Resolve
-    tk.Label(frame_davinci_in, text="{} :".format(customlang.get("label_forindv_name")), font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
+    tk.Label(frame_davinci_in, text="{} :".format(customlang.get("label_forindv_name")), font=bold_font, bg=customstyle.bg_frame, fg=customstyle.fg_frame).pack(anchor="w", pady=(0, 10))
 
     # Options d'entrée pour Davinci Resolve
     davinci_in_conversions = [
@@ -129,7 +129,7 @@ def create_options_tab(notebook, bold_font):
                        bg=customstyle.bg_frame, fg=fg_spec, bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
 
     # Label pour les options de sortie de Davinci Resolve
-    tk.Label(frame_davinci_out, text="{} :".format(customlang.get("label_foroutdv_name")), font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
+    tk.Label(frame_davinci_out, text="{} :".format(customlang.get("label_foroutdv_name")), font=bold_font, bg=customstyle.bg_frame, fg=customstyle.fg_frame).pack(anchor="w", pady=(0, 10))
 
     # Options de sortie de Davinci Resolve
     davinci_out_conversions = [
@@ -146,7 +146,7 @@ def create_options_tab(notebook, bold_font):
                        bg=customstyle.bg_frame, fg=fg_spec, bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
 
     # Label pour les autres options
-    tk.Label(frame_other, text="{} :".format(customlang.get("label_otheropt_name")), font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
+    tk.Label(frame_other, text="{} :".format(customlang.get("label_otheropt_name")), font=bold_font, bg=customstyle.bg_frame, fg=customstyle.fg_frame).pack(anchor="w", pady=(0, 10))
 
     # Autres options
     other_conversions = [
@@ -172,17 +172,17 @@ def create_options_tab(notebook, bold_font):
         tk.Radiobutton(frame_other, text=text, variable=conversion_option, value=mode,
                        bg=customstyle.bg_frame, fg=fg_spec, bd=0, relief="flat", highlightthickness=0).pack(anchor='w', pady=2)
 
-    frame_help = tk.LabelFrame(option_tab, text=customlang.get("frame_help_name"), bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_help = tk.LabelFrame(option_tab, text=customlang.get("frame_help_name"), bg=customstyle.bg_frame, fg=customstyle.fg_frame, padx=10, pady=10)
     frame_help.pack(pady=10, fill="x", padx=10)
     tk.Label(frame_help, text=customlang.get("label_opt_recommanded"), fg=customstyle.fg_recommended, bg=customstyle.bg_frame).pack()
 
     # --- Cadre : Nombre de threads ---
-    frame_threads = tk.LabelFrame(option_tab, text=customlang.get("frame_threads_name"), bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_threads = tk.LabelFrame(option_tab, text=customlang.get("frame_threads_name"), bg=customstyle.bg_frame, fg=customstyle.fg_frame, padx=10, pady=10)
     frame_threads.pack(pady=10, fill="x", padx=10)
 
-    tk.Label(frame_threads, text="{} (0 = auto) :".format(customlang.get("frame_threads_name")), bg=customstyle.bg_frame).pack(side="left")
+    tk.Label(frame_threads, text="{} (0 = auto) :".format(customlang.get("frame_threads_name")), bg=customstyle.bg_frame, fg=customstyle.fg_frame).pack(side="left")
     num_threads = tk.StringVar(value="0")
-    tk.Entry(frame_threads, textvariable=num_threads, width=5).pack(side="left", padx=5)
+    tk.Entry(frame_threads, bg=customstyle.bg_field, fg=customstyle.fg_field, highlightthickness=1, highlightcolor=customstyle.bd_color, highlightbackground=customstyle.bd_color, textvariable=num_threads, width=5).pack(side="left", padx=5)
 
     return conversion_option, num_threads
 
@@ -197,16 +197,16 @@ def create_processing_tab(root, notebook, input_files, output_dir, files_list,
     process_tab = customstyle.gen_tab(notebook, customlang.get("tab_processing_name"))
 
     # --- Cadre : Progression ---
-    frame_progress = tk.LabelFrame(process_tab, text=customlang.get("frame_progress_name"), bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_progress = tk.LabelFrame(process_tab, text=customlang.get("frame_progress_name"), bg=customstyle.bg_frame, fg=customstyle.fg_frame, padx=10, pady=10)
     frame_progress.pack(pady=10, fill="x", padx=10)
 
     progress_bar = ttk.Progressbar(frame_progress, length=700)
     progress_bar.pack(pady=5)
-    progress_label = tk.Label(frame_progress, text=customlang.get("label_inwait"), bg=customstyle.bg_frame)
+    progress_label = tk.Label(frame_progress, text=customlang.get("label_inwait"), bg=customstyle.bg_frame, fg=customstyle.fg_frame)
     progress_label.pack()
 
     # --- Cadre : Boutons de commande ---
-    frame_command = tk.LabelFrame(process_tab, text=customlang.get("frame_command_name"), bg=customstyle.bg_frame, padx=10, pady=10)
+    frame_command = tk.LabelFrame(process_tab, text=customlang.get("frame_command_name"), bg=customstyle.bg_frame, fg=customstyle.fg_frame, padx=10, pady=10)
     frame_command.pack(pady=10, fill="x", padx=10)
 
     convert_button = tk.Button(frame_command, text=customlang.get("button_convert_name"),
@@ -224,7 +224,7 @@ def create_processing_tab(root, notebook, input_files, output_dir, files_list,
 def create_debug_tab(notebook):
     debug_tab = customstyle.gen_tab(notebook, customlang.get("tab_debug_name"))
 
-    debug_text = tk.Text(debug_tab, height=15, width=80)
+    debug_text = tk.Text(debug_tab, bg=customstyle.bg_field, fg=customstyle.fg_field, highlightthickness=1, highlightcolor=customstyle.bd_color, highlightbackground=customstyle.bd_color, height=15, width=80)
     debug_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     clear_button = tk.Button(debug_tab, text=customlang.get("button_emptylogs_name"), width=14,
@@ -252,12 +252,12 @@ def create_help_tab(notebook, bold_font):
     help_tab = customstyle.gen_tab(notebook, "Aide")
 
     # --- Cadre : Aide ---
-    frame_help = tk.LabelFrame(help_tab, text=" Aide ", bg=customstyle.bg_frame, relief="flat", bd=0, padx=10, pady=10)
+    frame_help = tk.LabelFrame(help_tab, text=" Aide ", bg=customstyle.bg_frame, fg=customstyle.fg_frame, relief="flat", bd=0, padx=10, pady=10)
     frame_help.pack(pady=10, fill="x", padx=10)
 
-    tk.Label(frame_help, text="⚠️ Pour Davinci Resolve (version gratuite sous Linux) :", font=bold_font, bg=customstyle.bg_frame).pack(anchor="w")
-    tk.Label(frame_help, text="• Utilisez ProRes ou DNxHD pour une compatibilité optimale.", bg=customstyle.bg_frame).pack(anchor="w")
-    tk.Label(frame_help, text="• Les fichiers H.264 et H.265 doivent être convertis avant import dans Davinci Resolve.", bg=customstyle.bg_frame).pack(anchor="w")
-    # tk.Label(frame_help, text=f"• CUDA {'est disponible' if libtools.check_cuda() else 'n\'est pas disponible'} sur ce système.", bg=customstyle.bg_frame).pack(anchor="w")
+    tk.Label(frame_help, text="⚠️ Pour Davinci Resolve (version gratuite sous Linux) :", font=bold_font, bg=customstyle.bg_frame, fg=customstyle.fg_frame).pack(anchor="w")
+    tk.Label(frame_help, text="• Utilisez ProRes ou DNxHD pour une compatibilité optimale.", bg=customstyle.bg_frame, fg=customstyle.fg_frame).pack(anchor="w")
+    tk.Label(frame_help, text="• Les fichiers H.264 et H.265 doivent être convertis avant import dans Davinci Resolve.", bg=customstyle.bg_frame, fg=customstyle.fg_frame).pack(anchor="w")
+    # tk.Label(frame_help, text=f"• CUDA {'est disponible' if libtools.check_cuda() else 'n\'est pas disponible'} sur ce système.", bg=customstyle.bg_frame, fg=customstyle.fg_frame).pack(anchor="w")
     tk.Label(frame_help, text=f" ", bg=customstyle.bg_frame).pack(anchor="w")
-    tk.Label(frame_help, text=f"Copyright (C) 2025 - Sébastien Brière", bg=customstyle.bg_frame).pack(anchor="w")
+    tk.Label(frame_help, text=f"Copyright (C) 2025 - Sébastien Brière", bg=customstyle.bg_frame, fg=customstyle.fg_frame).pack(anchor="w")
