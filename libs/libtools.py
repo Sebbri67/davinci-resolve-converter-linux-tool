@@ -100,7 +100,7 @@ def check_cuda() -> bool:
             text=True, check=True
         )
         # return "cuda" in result.stdout.lower()
-        # Fonction désactivée pour le moment
+        # Fonction désactivée pour le moment. Elle retourne toujours False
         return False
     except (FileNotFoundError, subprocess.CalledProcessError):
         return False
@@ -286,7 +286,7 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
             "-vf", "format=yuv420p",  # conversion 10-bit → 8-bit
             "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "5.1",
             "-rc", "vbr", "-cq", "18",
-            "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+            "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
             "-movflags", "+faststart", out_file
         ]
         else:
