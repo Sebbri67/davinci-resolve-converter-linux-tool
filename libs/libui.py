@@ -108,7 +108,7 @@ def create_options_tab(notebook, bold_font):
 
     # Frame pour les autres options (à droite)
     frame_other = tk.Frame(frame_mode, bg=customstyle.bg_frame)
-    frame_other.pack(side="right", padx=10, fill="y")
+    frame_other.pack(side="left", padx=10, fill="y")
 
     # Label pour les options d'entrée pour Davinci Resolve
     tk.Label(frame_davinci_in, text="{} :".format(customlang.get("label_forindv_name")), font=bold_font, bg=customstyle.bg_frame).pack(anchor="w", pady=(0, 10))
