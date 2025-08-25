@@ -44,6 +44,7 @@ def load_param(key, filename="/tmp/dvtool.json", default=None):
     return params.get(key, default)       
 
 def setup_logging():
+    """Configure le logging pour l'application."""
     logging.basicConfig(
         level=logging.DEBUG,
         format='%(asctime)s - %(levelname)s - %(message)s',
@@ -77,17 +78,31 @@ def get_video_codec(filename: str) -> Optional[str]:
     except Exception:
         return None
     
+# def check_cuda() -> bool:
+#     """Vérifie si CUDA et NVENC sont disponibles et fonctionnels."""
+#     try:
+#         result = subprocess.run(
+#             ["ffmpeg", "-hide_banner", "-f", "lavfi", "-i", "testsrc=size=160x160:rate=1", "-c:v", "h264_nvenc",
+#              "-f", "null", "-"],
+#             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=10
+#         )
+#         # return True
+#         return result.returncode == 0
+#     except (subprocess.TimeoutExpired, subprocess.CalledProcessError, FileNotFoundError):
+#         return False
+
 def check_cuda() -> bool:
     """Vérifie si CUDA et NVENC sont disponibles et fonctionnels."""
     try:
         result = subprocess.run(
-            ["ffmpeg", "-hide_banner", "-f", "lavfi", "-i", "testsrc=size=128x128:rate=1", "-c:v", "h264_nvenc",
-             "-f", "null", "-"],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=10
+            ["nvcc", "--version"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            text=True, check=True
         )
-        # return True
-        return result.returncode == 0
-    except (subprocess.TimeoutExpired, subprocess.CalledProcessError, FileNotFoundError):
+        # return "cuda" in result.stdout.lower()
+        # Fonction désactivée pour le moment
+        return False
+    except (FileNotFoundError, subprocess.CalledProcessError):
         return False
   
 # def detect_and_convert_h264_h265(input_files: tk.Variable, files_list: tk.Listbox, conversion_option: tk.StringVar) -> None:
@@ -217,6 +232,7 @@ def set_ui_state(state: str, convert_button: tk.Button, cancel_button: tk.Button
 def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: int = 0, cuda_available: bool = False) -> List[str]:
     """Construit la commande FFmpeg avec support multi-cœurs et options pour Davinci Resolve."""
     base_cmd = ["ffmpeg", "-i", file_path, "-y"]
+    cuda_available = check_cuda()
 
     if any(codec in mode for codec in ["libx264", "libx265", "prores_ks"]):
         if num_threads > 0:
@@ -244,10 +260,13 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
     # --- OPTIONS POUR SORTIE DE DAVINCI RESOLVE (ProRes/DNxHD → H.264/H.265) ---
     elif mode == "ProRes/DNxHR → H.264 (Web)":
         if cuda_available:
-            return base_cmd + [
+            return [
+                "ffmpeg", "-hide_banner", "-y",
                 "-hwaccel", "cuda", "-hwaccel_device", "0",
-                "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "4.0",
-                "-pix_fmt", "yuv420p", "-rc", "vbr", "-cq", "18",
+                "-i", file_path,
+                "-vf", "format=yuv420p",  # conversion 10-bit → 8-bit
+                "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "5.1",
+                "-rc", "vbr", "-cq", "18",
                 "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
                 "-movflags", "+faststart", out_file
             ]
@@ -260,13 +279,16 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
             ]
     elif mode == "ProRes/DNxHR → H.264 (YouTube)":
         if cuda_available:
-            return base_cmd + [
-                "-hwaccel", "cuda", "-hwaccel_device", "0",
-                "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "4.0",
-                "-pix_fmt", "yuv420p", "-rc", "vbr", "-cq", "18",
-                "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
-                "-movflags", "+faststart", out_file
-            ]
+            return [
+            "ffmpeg", "-hide_banner", "-y",
+            "-hwaccel", "cuda", "-hwaccel_device", "0",
+            "-i", file_path,
+            "-vf", "format=yuv420p",  # conversion 10-bit → 8-bit
+            "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "5.1",
+            "-rc", "vbr", "-cq", "18",
+            "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+            "-movflags", "+faststart", out_file
+        ]
         else:
             return base_cmd + [
                 "-c:v", "libx264", "-preset", "slow", "-crf", "18",
@@ -274,6 +296,7 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
                 "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
                 "-movflags", "+faststart", out_file
             ]
+ 
     elif mode == "ProRes/DNxHR → H.265 (Web/YouTube)":
         return base_cmd + [
             "-c:v", "libx265", "-preset", "slow", "-crf", "22",
@@ -281,29 +304,29 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
             "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
             "-movflags", "+faststart", out_file
         ]
-
+    
     # --- AUTRES OPTIONS ---
-    elif mode == "H.264 → MJPEG":
-        return base_cmd + [
-            "-hwaccel", "cuda" if cuda_available else "none", "-hwaccel_device", "0" if cuda_available else "none",
-            "-vcodec", "mjpeg", "-q:v", "2",
-            "-acodec", "pcm_s16be", "-q:a", "0", "-f", "mov", out_file
-        ]
-    elif mode == "MJPEG → H.264 (NVIDIA QP)" and cuda_available:
-        return base_cmd + [
-            "-hwaccel", "cuda", "-hwaccel_device", "0",
-            "-vf", "yadif", "-codec:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "4.0",
-            "-pix_fmt", "yuv420p", "-rc", "vbr", "-cq", "18",
-            "-codec:a", "aac", "-b:a", "384k", "-ar", "48000",
-            "-movflags", "faststart", out_file
-        ]
-    elif mode == "MJPEG → H.264 (NVIDIA Bitrate)" and cuda_available:
-        return base_cmd + [
-            "-hwaccel", "cuda", "-hwaccel_output_format", "cuda",
-            "-c:a", "copy", "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "4.0",
-            "-pix_fmt", "yuv420p", "-b:v", "10M", "-rc", "vbr",
-            "-movflags", "faststart", out_file
-        ]
+#     elif mode == "H.264 → MJPEG":
+#         return base_cmd + [
+#             "-hwaccel", "cuda" if cuda_available else "none", "-hwaccel_device", "0" if cuda_available else "none",
+#             "-vcodec", "mjpeg", "-q:v", "2",
+#             "-acodec", "pcm_s16be", "-q:a", "0", "-f", "mov", out_file
+#         ]
+#     elif mode == "MJPEG → H.264 (NVIDIA QP)" and cuda_available:
+#         return base_cmd + [
+#             "-hwaccel", "cuda", "-hwaccel_device", "0",
+#             "-vf", "yadif", "-codec:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "4.0",
+#             "-pix_fmt", "yuv420p", "-rc", "vbr", "-cq", "18",
+#             "-codec:a", "aac", "-b:a", "384k", "-ar", "48000",
+#             "-movflags", "faststart", out_file
+#         ]
+#     elif mode == "MJPEG → H.264 (NVIDIA Bitrate)" and cuda_available:
+#         return base_cmd + [
+#             "-hwaccel", "cuda", "-hwaccel_output_format", "cuda",
+#             "-c:a", "copy", "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "4.0",
+#             "-pix_fmt", "yuv420p", "-b:v", "10M", "-rc", "vbr",
+#             "-movflags", "faststart", out_file
+#         ]
     elif mode == "MJPEG → H.264 (libx264 CPU)":
         return base_cmd + [
             "-vf", "yadif", "-codec:v", "libx264", "-preset", "slow", "-crf", "18",
@@ -325,22 +348,22 @@ def build_ffmpeg_command(file_path: str, mode: str, out_file: str, num_threads: 
             "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
             "-movflags", "+faststart", out_file
         ]
-    elif mode == "Optimisé YouTube (H.264 NVIDIA QP)" and cuda_available:
-        return base_cmd + [
-            "-hwaccel", "cuda", "-hwaccel_device", "0",
-            "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "4.0",
-            "-pix_fmt", "yuv420p", "-rc", "vbr", "-cq", "18",
-            "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
-            "-movflags", "+faststart", out_file
-        ]
-    elif mode == "Optimisé YouTube (H.264 NVIDIA Bitrate)" and cuda_available:
-        return base_cmd + [
-            "-hwaccel", "cuda", "-hwaccel_output_format", "cuda",
-            "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "4.0",
-            "-pix_fmt", "yuv420p", "-b:v", "20M", "-rc", "vbr",
-            "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
-            "-movflags", "+faststart", out_file
-        ]
+#     elif mode == "Optimisé YouTube (H.264 NVIDIA QP)" and cuda_available:
+#         return base_cmd + [
+#             "-hwaccel", "cuda", "-hwaccel_device", "0",
+#             "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "4.0",
+#             "-pix_fmt", "yuv420p", "-rc", "vbr", "-cq", "18",
+#             "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
+#             "-movflags", "+faststart", out_file
+#         ]
+#     elif mode == "Optimisé YouTube (H.264 NVIDIA Bitrate)" and cuda_available:
+#         return base_cmd + [
+#             "-hwaccel", "cuda", "-hwaccel_output_format", "cuda",
+#             "-c:v", "h264_nvenc", "-preset", "slow", "-profile:v", "high", "-level", "4.0",
+#             "-pix_fmt", "yuv420p", "-b:v", "20M", "-rc", "vbr",
+#             "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
+#             "-movflags", "+faststart", out_file
+#         ]
     else:
         raise ValueError(f"{customlang.get("cuda_unknown")} : {mode}")
     

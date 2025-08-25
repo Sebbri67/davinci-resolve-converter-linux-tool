@@ -8,7 +8,7 @@ import config.lang as customlang
 def create_princ():
     root = tk.Tk()
     root.title(customlang.get("root_title"))
-    root.geometry("900x600")
+    root.geometry("1200x600")
     root.configure(bg=customstyle.bg_global)
 
     bold_font = tkFont.Font(family="Helvetica", size=10, weight="bold")
@@ -153,13 +153,13 @@ def create_options_tab(notebook, bold_font):
         # ("H.264 → MJPEG", "H.264 → MJPEG")
     ]
 
-    if cuda_available:
-        other_conversions.extend([
-            ("MJPEG → H.264 (NVIDIA QP)", "MJPEG → H.264 (NVIDIA QP)"),
-            ("MJPEG → H.264 (NVIDIA Bitrate)", "MJPEG → H.264 (NVIDIA Bitrate)"),
-            ("Optimisé YouTube (H.264 NVIDIA QP)", "Optimisé YouTube (H.264 NVIDIA QP)"),
-            ("Optimisé YouTube (H.264 NVIDIA Bitrate)", "Optimisé YouTube (H.264 NVIDIA Bitrate)")
-        ])
+#     if cuda_available:
+#         other_conversions.extend([
+#             ("MJPEG → H.264 (NVIDIA QP)", "MJPEG → H.264 (NVIDIA QP)"),
+#             ("MJPEG → H.264 (NVIDIA Bitrate)", "MJPEG → H.264 (NVIDIA Bitrate)"),
+#             ("Optimisé YouTube (H.264 NVIDIA QP)", "Optimisé YouTube (H.264 NVIDIA QP)"),
+#             ("Optimisé YouTube (H.264 NVIDIA Bitrate)", "Optimisé YouTube (H.264 NVIDIA Bitrate)")
+#         ])
 
     other_conversions.extend([
         ("MJPEG → H.264 (libx264 CPU)", "MJPEG → H.264 (libx264 CPU)"),
@@ -258,6 +258,6 @@ def create_help_tab(notebook, bold_font):
     tk.Label(frame_help, text="⚠️ Pour Davinci Resolve (version gratuite sous Linux) :", font=bold_font, bg=customstyle.bg_frame).pack(anchor="w")
     tk.Label(frame_help, text="• Utilisez ProRes ou DNxHD pour une compatibilité optimale.", bg=customstyle.bg_frame).pack(anchor="w")
     tk.Label(frame_help, text="• Les fichiers H.264 et H.265 doivent être convertis avant import dans Davinci Resolve.", bg=customstyle.bg_frame).pack(anchor="w")
-    tk.Label(frame_help, text=f"• CUDA {'est disponible' if libtools.check_cuda() else 'n\'est pas disponible'} sur ce système.", bg=customstyle.bg_frame).pack(anchor="w")
+    # tk.Label(frame_help, text=f"• CUDA {'est disponible' if libtools.check_cuda() else 'n\'est pas disponible'} sur ce système.", bg=customstyle.bg_frame).pack(anchor="w")
     tk.Label(frame_help, text=f" ", bg=customstyle.bg_frame).pack(anchor="w")
     tk.Label(frame_help, text=f"Copyright (C) 2025 - Sébastien Brière", bg=customstyle.bg_frame).pack(anchor="w")
